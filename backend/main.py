@@ -2,13 +2,14 @@ import os
 import sys
 sys.path.insert(0, os.path.dirname(__file__))
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 from optimizer import load_models, run_optimizer, CATEGORY_CONFIG
@@ -16,10 +17,17 @@ from compliance import check_compliance
 from pdf_report import generate_pdf
 
 # ── App setup ──────────────────────────────────────────────
+@asynccontextmanager
+async def lifespan(app):
+    load_models()
+    print("[OK] NoteStack models loaded")
+    yield
+
 app = FastAPI(
     title="NoteStack API",
     description="Reverse Sensory Formulation Engine for Indian Food Products",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -45,15 +53,10 @@ class FormulationHistory(Base):
     predicted_scores= Column(Text)
     confidence_pct  = Column(Float)
     compliance_status = Column(String)
-    created_at      = Column(DateTime, default=datetime.utcnow)
+    created_at      = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
 Base.metadata.create_all(bind=engine)
 
-# ── Load ML models on startup ───────────────────────────────
-@app.on_event("startup")
-def startup_event():
-    load_models()
-    print("✅ NoteStack models loaded")
 
 # ── Request / Response schemas ──────────────────────────────
 class FormulateRequest(BaseModel):

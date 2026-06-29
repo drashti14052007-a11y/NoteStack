@@ -6,7 +6,6 @@ let radarChart       = null;
 
 // ── Screen navigation ────────────────────────────────────────
 function showScreen(id) {
-  console.trace("showScreen called with:", id);
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -90,6 +89,7 @@ document.getElementById("btn-formulate").addEventListener("click", async () => {
       body:    JSON.stringify({ category: selectedCategory, target_scores: scores }),
     });
     const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Request failed");
     displayResults(data, scores);
     showScreen("screen-results");
   } catch(err) {
@@ -242,6 +242,7 @@ function displayResults(data, scores) {
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ category: data.category, target_scores: scores }),
       });
+      if (!res.ok) throw new Error("Failed to generate report");
       const blob = await res.blob();
       const url  = URL.createObjectURL(blob);
       const filename = `notestack_${data.category}_report.pdf`;

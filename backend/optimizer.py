@@ -1,8 +1,10 @@
+import os
 import numpy as np
 import joblib
 from scipy.optimize import minimize
 
 MODELS = {}
+BASE_DIR = os.path.dirname(__file__)
 
 CATEGORY_CONFIG = {
     "dairy": {
@@ -34,7 +36,7 @@ CATEGORY_CONFIG = {
 
 def load_models():
     for cat in CATEGORY_CONFIG:
-        MODELS[cat] = joblib.load(f"models/{cat}_model.joblib")["model"]
+        MODELS[cat] = joblib.load(os.path.join(BASE_DIR, "models", f"{cat}_model.joblib"))["model"]
 
 def run_optimizer(category: str, target_scores: list[float]) -> dict:
     config = CATEGORY_CONFIG[category]
