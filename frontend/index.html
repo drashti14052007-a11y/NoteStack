@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NoteStack — Reverse Sensory Formulation Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- SCREEN 1: WELCOME -->
+  <div id="screen-welcome" class="screen active">
+    <nav class="nav">
+      <div class="nav-logo">NoteStack</div>
+      <div class="nav-credit">Built by Drashti Patel</div>
+    </nav>
+    <div class="welcome-hero">
+      <div class="hero-left">
+        <h1>The formula<br>starts with <em>taste.</em><br>It finds the <em>ingredients.</em></h1>
+        <p>Set your target sensory profile — sweetness, body, aroma — and NoteStack computes the exact ingredient ratios that produce it.</p>
+        <button class="btn-primary" id="btn-start">Start formulating →</button>
+        <div class="cat-pills">
+          <span class="pill">🥛 Dairy</span>
+          <span class="pill">🍫 Chocolate</span>
+          <span class="pill">🌶️ Spices</span>
+          <span class="pill">🍿 Savory Snacks</span>
+        </div>
+      </div>
+      <div class="hero-right">
+        <p class="hero-quote">A reverse sensory formulation engine for Indian food products — powered by ML models trained on food science equations.</p>
+        <div class="stat-list">
+          <div class="stat-row">
+            <span class="stat-num">4</span>
+            <span class="stat-label">product categories</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-row">
+            <span class="stat-num">4K</span>
+            <span class="stat-label">training rows</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-row">
+            <span class="stat-num">0.94</span>
+            <span class="stat-label">average R² accuracy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="welcome-footer">B.Tech in Food Processing Technology · ADIT, CVMU</footer>
+  </div>
+
+  <!-- SCREEN 2: CATEGORY -->
+  <div id="screen-category" class="screen">
+    <nav class="nav">
+      <div class="nav-logo">NoteStack</div>
+      <button class="nav-back" id="btn-back-welcome">← Back</button>
+    </nav>
+    <div class="screen-body">
+      <div class="screen-heading">
+        <span class="eyebrow">Step 1 of 2</span>
+        <h2>Choose a product category</h2>
+        <p class="screen-sub">Select what you're formulating. Each category has its own ingredient set and sensory model.</p>
+      </div>
+      <div class="cat-grid">
+        <button class="cat-card" data-cat="dairy">
+          <span class="cat-icon">🥛</span>
+          <span class="cat-name">Dairy</span>
+          <span class="cat-desc">Yoghurt, dahi, fermented milk</span>
+        </button>
+        <button class="cat-card" data-cat="chocolate">
+          <span class="cat-icon">🍫</span>
+          <span class="cat-name">Chocolate</span>
+          <span class="cat-desc">Dark, milk, compound chocolate</span>
+        </button>
+        <button class="cat-card" data-cat="spices">
+          <span class="cat-icon">🌶️</span>
+          <span class="cat-name">Spices</span>
+          <span class="cat-desc">Masala blends, spice mixes</span>
+        </button>
+        <button class="cat-card" data-cat="snacks">
+          <span class="cat-icon">🍿</span>
+          <span class="cat-name">Savory Snacks</span>
+          <span class="cat-desc">Extruded, fried, baked snacks</span>
+        </button>
+      </div>
+    </div>
+    <footer class="page-footer">B.Tech in Food Processing Technology · ADIT, CVMU</footer>
+  </div>
+
+  <!-- SCREEN 3: SLIDERS -->
+  <div id="screen-sliders" class="screen">
+    <nav class="nav">
+      <div class="nav-logo">NoteStack</div>
+      <button class="nav-back" id="btn-back-category">← Back</button>
+    </nav>
+    <div class="screen-body">
+      <div class="screen-heading">
+        <span class="eyebrow">Step 2 of 2 · <span id="slider-cat-label"></span></span>
+        <h2>Set your sensory target</h2>
+        <p class="screen-sub">Drag each slider to define what you want the product to taste like. 1 = very low, 10 = very high.</p>
+      </div>
+      <div id="sliders-grid" class="sliders-grid"></div>
+      <button class="btn-primary btn-formulate" id="btn-formulate">Generate formulation →</button>
+    </div>
+    <footer class="page-footer">B.Tech in Food Processing Technology · ADIT, CVMU</footer>
+  </div>
+
+  <!-- SCREEN 4: RESULTS -->
+  <div id="screen-results" class="screen">
+    <nav class="nav">
+      <div class="nav-logo">NoteStack</div>
+      <button class="nav-back" id="btn-back-sliders">← Adjust targets</button>
+    </nav>
+    <div class="screen-body">
+      <div class="screen-heading">
+        <span class="eyebrow">Formulation result · <span id="result-cat-label"></span></span>
+        <h2>Recommended formulation</h2>
+      </div>
+      <div class="results-layout">
+        <div class="results-left">
+          <div class="result-card">
+            <div class="result-card-label">Ingredient ratios</div>
+            <table class="formulation-table">
+              <thead><tr><th>Ingredient</th><th>Amount</th></tr></thead>
+              <tbody id="formulation-body"></tbody>
+            </table>
+          </div>
+          <div class="confidence-card" id="confidence-card"></div>
+          <div class="result-card">
+            <div class="result-card-label">FSSAI compliance</div>
+            <div id="compliance-box"></div>
+          </div>
+        </div>
+        <div class="results-right">
+          <div class="result-card chart-card">
+            <div class="result-card-label">Sensory profile — target vs predicted</div>
+            <canvas id="radar-chart"></canvas>
+          </div>
+          <div class="result-card">
+            <div class="result-card-label">Score breakdown</div>
+            <div id="score-cards-grid" class="score-cards-grid"></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary btn-pdf" id="btn-download-pdf">Download PDF report</button>
+      <button class="btn-ghost" id="btn-reset">← Start over</button>
+    </div>
+    <footer class="page-footer">B.Tech in Food Processing Technology · ADIT, CVMU</footer>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loading" class="loading-overlay hidden">
+    <div class="spinner"></div>
+    <p>Optimizing formulation…</p>
+  </div>
+
+  <!-- Error toast -->
+  <div id="error-toast" class="error-toast hidden">
+    <span id="error-msg"></span>
+    <button onclick="document.getElementById('error-toast').classList.add('hidden')">✕</button>
+  </div>
+
+  <!-- Download success toast -->
+  <div id="download-toast" class="download-toast hidden">
+    <svg width="28" height="28" viewBox="0 0 34 34" aria-hidden="true" style="flex-shrink:0">
+      <circle cx="17" cy="17" r="15" fill="none" stroke="#ede4cd" stroke-width="2"/>
+      <circle class="download-toast-ring" cx="17" cy="17" r="15" fill="none" stroke="#8b4513" stroke-width="2" stroke-linecap="round" transform="rotate(-90 17 17)"/>
+      <path class="download-toast-tick" d="M11 17.5l4 4 8-9" fill="none" stroke="#8b4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="download-toast-text">
+      <span class="download-toast-title">Report downloaded</span>
+      <span class="download-toast-sub" id="download-toast-sub">notestack_report.pdf</span>
+    </div>
+    <button class="download-toast-open" id="download-toast-open">Open file</button>
+    <button class="download-toast-close" id="download-toast-close" aria-label="Dismiss">✕</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
