@@ -13,22 +13,22 @@ CATEGORIES = {
     "dairy": {
         "file": "backend/data/dairy.csv",
         "features": ["fat_pct", "protein_pct", "sugar_pct", "starter_pct", "stabilizer_pct"],
-        "targets":  ["sweetness", "sourness", "body", "creaminess", "overall_liking"],
+        "targets":  ["sweetness", "sourness", "body", "creaminess", "flavor_balance"],
     },
     "chocolate": {
         "file": "backend/data/chocolate.csv",
         "features": ["cocoa_solids_pct", "cocoa_butter_pct", "sugar_pct", "milk_solids_pct", "lecithin_pct"],
-        "targets":  ["bitterness", "sweetness", "melt", "snap", "overall_liking"],
+        "targets":  ["bitterness", "sweetness", "melt", "snap", "flavor_balance"],
     },
     "spices": {
         "file": "backend/data/spices.csv",
         "features": ["chili_pct", "cumin_pct", "coriander_pct", "turmeric_pct", "salt_pct"],
-        "targets":  ["pungency", "aroma", "colour", "saltiness", "overall_liking"],
+        "targets":  ["pungency", "aroma", "colour", "saltiness", "flavor_balance"],
     },
     "snacks": {
         "file": "backend/data/snacks.csv",
         "features": ["starch_pct", "fat_pct", "salt_pct", "moisture_pct", "seasoning_pct"],
-        "targets":  ["crunchiness", "oiliness", "saltiness", "flavour", "overall_liking"],
+        "targets":  ["crunchiness", "oiliness", "saltiness", "flavour", "flavor_balance"],
     },
 }
 
@@ -73,6 +73,6 @@ for name, config in CATEGORIES.items():
         "targets":  config["targets"],
     }, model_path)
 
-    print(f"Saved → {model_path}")
+    print(f"Saved -> {model_path}")
 
-print("\n✅ All 4 models trained and saved.")
+print("\nAll 4 models trained and saved.")

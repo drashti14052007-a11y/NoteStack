@@ -9,25 +9,25 @@ BASE_DIR = os.path.dirname(__file__)
 CATEGORY_CONFIG = {
     "dairy": {
         "features": ["fat_pct", "protein_pct", "sugar_pct", "starter_pct", "stabilizer_pct"],
-        "targets":  ["sweetness", "sourness", "body", "creaminess", "overall_liking"],
+        "targets":  ["sweetness", "sourness", "body", "creaminess", "flavor_balance"],
         "bounds":   [(0.5, 8.0), (3.0, 6.0), (0.0, 12.0), (1.0, 4.0), (0.0, 1.0)],
         "x0":       [4.0, 4.5, 6.0, 2.5, 0.5],
     },
     "chocolate": {
         "features": ["cocoa_solids_pct", "cocoa_butter_pct", "sugar_pct", "milk_solids_pct", "lecithin_pct"],
-        "targets":  ["bitterness", "sweetness", "melt", "snap", "overall_liking"],
+        "targets":  ["bitterness", "sweetness", "melt", "snap", "flavor_balance"],
         "bounds":   [(35.0, 85.0), (20.0, 40.0), (5.0, 50.0), (0.0, 25.0), (0.1, 0.5)],
         "x0":       [60.0, 30.0, 27.0, 12.0, 0.3],
     },
     "spices": {
         "features": ["chili_pct", "cumin_pct", "coriander_pct", "turmeric_pct", "salt_pct"],
-        "targets":  ["pungency", "aroma", "colour", "saltiness", "overall_liking"],
+        "targets":  ["pungency", "aroma", "colour", "saltiness", "flavor_balance"],
         "bounds":   [(0.0, 40.0), (0.0, 30.0), (0.0, 30.0), (0.0, 15.0), (0.0, 10.0)],
         "x0":       [20.0, 15.0, 15.0, 7.5, 5.0],
     },
     "snacks": {
         "features": ["starch_pct", "fat_pct", "salt_pct", "moisture_pct", "seasoning_pct"],
-        "targets":  ["crunchiness", "oiliness", "saltiness", "flavour", "overall_liking"],
+        "targets":  ["crunchiness", "oiliness", "saltiness", "flavour", "flavor_balance"],
         "bounds":   [(40.0, 70.0), (10.0, 35.0), (0.5, 4.0), (1.0, 8.0), (0.0, 8.0)],
         "x0":       [55.0, 22.0, 2.0, 4.0, 4.0],
     },
@@ -60,12 +60,16 @@ def run_optimizer(category: str, target_scores: list[float]) -> dict:
             x0,
             method="SLSQP",
             bounds=config["bounds"],
-            options={"maxiter": 1000, "ftol": 1e-9},
+            options={"maxiter": 500, "ftol": 1e-9},
         )
 
         if result.fun < best_val:
             best_val    = result.fun
             best_result = result
+
+        # Early-terminate if residual is near-zero
+        if best_val < 0.01:
+            break
 
     x_opt        = best_result.x
     pred_scores  = model.predict([x_opt])[0]

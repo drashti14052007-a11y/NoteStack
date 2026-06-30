@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="NoteStack is a reverse sensory formulation engine for Indian food products. Set target sensory profiles and compute exact ingredient ratios powered by ML." />
   <title>NoteStack — Reverse Sensory Formulation Engine</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://notestack-api-aiyj.onrender.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
   <!-- SCREEN 1: WELCOME -->
@@ -21,7 +28,8 @@
     <div class="welcome-hero">
       <div class="hero-left">
         <h1>The formula<br>starts with <em>taste.</em><br>It finds the <em>ingredients.</em></h1>
-        <p>Set your target sensory profile — sweetness, body, aroma — and NoteStack computes the exact ingredient ratios that produce it.</p>
+        <p>Set your target sensory profile — sweetness, body, aroma — and NoteStack computes the exact ingredient ratios
+          that produce it.</p>
         <button class="btn-primary" id="btn-start">Start formulating →</button>
         <div class="cat-pills">
           <span class="pill">🥛 Dairy</span>
@@ -31,21 +39,28 @@
         </div>
       </div>
       <div class="hero-right">
-        <p class="hero-quote">A reverse sensory formulation engine for Indian food products — powered by ML models trained on food science equations.</p>
-        <div class="stat-list">
-          <div class="stat-row">
-            <span class="stat-num">4</span>
-            <span class="stat-label">product categories</span>
+        <p class="hero-quote">A reverse sensory formulation engine for Indian food products — powered by ML models
+          trained on food science equations.</p>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-card-icon">📦</span>
+            <span class="stat-card-num">4</span>
+            <span class="stat-card-label">Product Categories</span>
           </div>
-          <div class="stat-divider"></div>
-          <div class="stat-row">
-            <span class="stat-num">4K</span>
-            <span class="stat-label">training rows</span>
+          <div class="stat-card">
+            <span class="stat-card-icon">🧪</span>
+            <span class="stat-card-num">24</span>
+            <span class="stat-card-label">Subcategories</span>
           </div>
-          <div class="stat-divider"></div>
-          <div class="stat-row">
-            <span class="stat-num">0.94</span>
-            <span class="stat-label">average R² accuracy</span>
+          <div class="stat-card">
+            <span class="stat-card-icon">📊</span>
+            <span class="stat-card-num">4K</span>
+            <span class="stat-card-label">Training Rows</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-icon">🎯</span>
+            <span class="stat-card-num">0.94</span>
+            <span class="stat-card-label">Avg R² Accuracy</span>
           </div>
         </div>
       </div>
@@ -61,9 +76,10 @@
     </nav>
     <div class="screen-body">
       <div class="screen-heading">
-        <span class="eyebrow">Step 1 of 2</span>
+        <span class="eyebrow">Step 1 of 3</span>
         <h2>Choose a product category</h2>
-        <p class="screen-sub">Select what you're formulating. Each category has its own ingredient set and sensory model.</p>
+        <p class="screen-sub">Select what you're formulating. Each category has its own ingredient set and sensory
+          model.</p>
       </div>
       <div class="cat-grid">
         <button class="cat-card" data-cat="dairy">
@@ -91,7 +107,25 @@
     <footer class="page-footer">B.Tech in Food Processing Technology · ADIT, CVMU</footer>
   </div>
 
-  <!-- SCREEN 3: SLIDERS -->
+  <!-- SCREEN 3: SUBCATEGORY -->
+  <div id="screen-subcategory" class="screen">
+    <nav class="nav">
+      <div class="nav-logo">NoteStack</div>
+      <button class="nav-back" id="btn-back-category-from-sub">← Back</button>
+    </nav>
+    <div class="screen-body">
+      <div class="screen-heading">
+        <span class="eyebrow">Step 2 of 3 · <span id="subcat-parent-label"></span></span>
+        <h2>Select a product type</h2>
+        <p class="screen-sub">Choose the specific product you're formulating. Each product has its own sensory
+          evaluation criteria.</p>
+      </div>
+      <div id="subcat-grid" class="subcat-grid"></div>
+    </div>
+    <footer class="page-footer">B.Tech in Food Processing Technology · ADIT, CVMU</footer>
+  </div>
+
+  <!-- SCREEN 4: SENSORY RATINGS -->
   <div id="screen-sliders" class="screen">
     <nav class="nav">
       <div class="nav-logo">NoteStack</div>
@@ -99,17 +133,23 @@
     </nav>
     <div class="screen-body">
       <div class="screen-heading">
-        <span class="eyebrow">Step 2 of 2 · <span id="slider-cat-label"></span></span>
+        <span class="eyebrow">Step 3 of 3 · <span id="slider-cat-label"></span></span>
         <h2>Set your sensory target</h2>
-        <p class="screen-sub">Drag each slider to define what you want the product to taste like. 1 = very low, 10 = very high.</p>
+        <p class="screen-sub">Rate each attribute to define what you want the product to taste like.</p>
+        <div class="rating-guidance">
+          <span class="guidance-low">0 = Very Low</span>
+          <span class="guidance-high">10 = Very High</span>
+        </div>
       </div>
       <div id="sliders-grid" class="sliders-grid"></div>
-      <button type="button" class="btn-primary btn-formulate" id="btn-formulate">Generate formulation →</button>
+      <div class="formulate-action-area">
+        <button type="button" class="btn-primary btn-formulate" id="btn-formulate">Generate formulation →</button>
+      </div>
     </div>
     <footer class="page-footer">B.Tech in Food Processing Technology · ADIT, CVMU</footer>
   </div>
 
-  <!-- SCREEN 4: RESULTS -->
+  <!-- SCREEN 5: RESULTS -->
   <div id="screen-results" class="screen">
     <nav class="nav">
       <div class="nav-logo">NoteStack</div>
@@ -125,7 +165,12 @@
           <div class="result-card">
             <div class="result-card-label">Ingredient ratios</div>
             <table class="formulation-table">
-              <thead><tr><th>Ingredient</th><th>Amount</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>Ingredient</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
               <tbody id="formulation-body"></tbody>
             </table>
           </div>
@@ -152,10 +197,21 @@
     <footer class="page-footer">B.Tech in Food Processing Technology · ADIT, CVMU</footer>
   </div>
 
+  <!-- Connection overlay -->
+  <div id="connection-overlay" class="connection-overlay">
+    <div class="connection-content">
+      <div class="spinner spinner-lg"></div>
+      <p id="connection-status-text" class="connection-status-text">Preparing Formulation Engine…</p>
+      <div id="connection-retry-wrap" class="connection-retry-wrap hidden">
+        <button class="btn-primary" id="btn-connection-retry">Retry connection</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Loading overlay -->
   <div id="loading" class="loading-overlay hidden">
     <div class="spinner"></div>
-    <p>Optimizing formulation…</p>
+    <p id="loading-text">Generating Your Formulation…</p>
   </div>
 
   <!-- Error toast -->
@@ -167,9 +223,11 @@
   <!-- Download success toast -->
   <div id="download-toast" class="download-toast hidden">
     <svg width="28" height="28" viewBox="0 0 34 34" aria-hidden="true" style="flex-shrink:0">
-      <circle cx="17" cy="17" r="15" fill="none" stroke="#ede4cd" stroke-width="2"/>
-      <circle class="download-toast-ring" cx="17" cy="17" r="15" fill="none" stroke="#8b4513" stroke-width="2" stroke-linecap="round" transform="rotate(-90 17 17)"/>
-      <path class="download-toast-tick" d="M11 17.5l4 4 8-9" fill="none" stroke="#8b4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="17" cy="17" r="15" fill="none" stroke="#ede4cd" stroke-width="2" />
+      <circle class="download-toast-ring" cx="17" cy="17" r="15" fill="none" stroke="#8b4513" stroke-width="2"
+        stroke-linecap="round" transform="rotate(-90 17 17)" />
+      <path class="download-toast-tick" d="M11 17.5l4 4 8-9" fill="none" stroke="#8b4513" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" />
     </svg>
     <div class="download-toast-text">
       <span class="download-toast-title">Report downloaded</span>
@@ -181,4 +239,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>

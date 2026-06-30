@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 np.random.seed(42)
-n = 1000
+n = 1500
 
 # --- INGREDIENT RANGES ---
 fat         = np.random.uniform(0.5, 8.0, n)
@@ -47,12 +47,14 @@ creaminess = (
     + noise()
 )
 
-# Overall liking: weighted blend of all attributes
-overall_liking = (
-    0.25 * sweetness
-    + 0.15 * (10 - sourness)    # less sour = more liked in general
+# Flavor balance: measures how well the taste components work together
+# Peaks when sweetness and sourness are moderate and body is present
+flavor_balance = (
+    0.20 * sweetness
+    + 0.15 * (10 - np.abs(sourness - 5))   # best when sourness is moderate
     + 0.25 * body
     + 0.25 * creaminess
+    + 0.10 * np.minimum(sweetness, creaminess)  # synergy term
     + noise()
 )
 
@@ -70,7 +72,7 @@ df = pd.DataFrame({
     "sourness":         clip(sourness),
     "body":             clip(body),
     "creaminess":       clip(creaminess),
-    "overall_liking":   clip(overall_liking),
+    "flavor_balance":   clip(flavor_balance),
 })
 
 df.to_csv("backend/data/dairy.csv", index=False)

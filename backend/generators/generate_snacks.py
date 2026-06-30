@@ -43,12 +43,15 @@ flavour = (
     + noise()
 )
 
-# Overall liking: crunchy + flavourful + not too oily = liked
-overall_liking = (
-    0.35 * crunchiness
-    + 0.30 * flavour
-    + 0.20 * saltiness
-    + 0.15 * (10 - oiliness)                      # too oily = less liked
+# Flavor balance: measures how well all taste/texture components work together
+# Best when crunchy, well-seasoned, moderately salty, and not too oily
+flavor_balance = (
+    0.25 * crunchiness
+    + 0.25 * flavour
+    + 0.15 * saltiness
+    + 0.15 * (10 - oiliness)                      # too oily = less balanced
+    + 0.10 * np.minimum(crunchiness, flavour)      # synergy: crunch + flavor
+    + 0.10 * (10 - np.abs(saltiness - 5))          # best when salt is moderate
     + noise()
 )
 
@@ -65,7 +68,7 @@ df = pd.DataFrame({
     "oiliness":       clip(oiliness),
     "saltiness":      clip(saltiness),
     "flavour":        clip(flavour),
-    "overall_liking": clip(overall_liking),
+    "flavor_balance": clip(flavor_balance),
 })
 
 df.to_csv("backend/data/snacks.csv", index=False)

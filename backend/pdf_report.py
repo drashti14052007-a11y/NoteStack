@@ -35,7 +35,12 @@ class NoteStackReport(FPDF):
 
 def generate_pdf(category: str, formulation: dict, predicted_scores: dict,
                  target_scores: dict, confidence_pct: float,
-                 residual_error: float, compliance: dict) -> bytes:
+                 residual_error: float, compliance: dict,
+                 subcategory: str = None,
+                 attribute_descriptions: dict = None) -> bytes:
+
+    if attribute_descriptions is None:
+        attribute_descriptions = {}
 
     pdf = NoteStackReport()
     pdf.set_auto_page_break(auto=True, margin=15)
@@ -47,7 +52,14 @@ def generate_pdf(category: str, formulation: dict, predicted_scores: dict,
     pdf.cell(0, 10, "Formulation Report", ln=True)
     pdf.set_font("Helvetica", "", 10)
     pdf.set_text_color(107, 92, 72)
-    pdf.cell(0, 6, f"Category: {category.capitalize()}   |   Generated: {datetime.now().strftime('%d %b %Y, %H:%M')}", ln=True)
+
+    cat_label = category.capitalize()
+    sub_label = ""
+    if subcategory:
+        sub_name = subcategory.replace("_", " ").title()
+        sub_label = f"  |  Product: {sub_name}"
+
+    pdf.cell(0, 6, f"Category: {cat_label}{sub_label}   |   Generated: {datetime.now().strftime('%d %b %Y, %H:%M')}", ln=True)
     pdf.ln(6)
 
     # Confidence banner
@@ -101,7 +113,7 @@ def generate_pdf(category: str, formulation: dict, predicted_scores: dict,
 
     pdf.ln(6)
 
-    # Sensory scores
+    # Sensory scores with descriptions
     section_title("Sensory profile - target vs predicted")
     pdf.set_font("Helvetica", "B", 9)
     pdf.set_text_color(155, 139, 114)
@@ -125,6 +137,15 @@ def generate_pdf(category: str, formulation: dict, predicted_scores: dict,
         pdf.set_font("Helvetica", "B", 10)
         pdf.set_text_color(26, 18, 8)
         pdf.cell(50, 7, str(v), align="R", ln=True)
+
+        # Add attribute description if available
+        desc = attribute_descriptions.get(k, "")
+        if desc:
+            pdf.set_font("Helvetica", "I", 8)
+            pdf.set_text_color(155, 139, 114)
+            pdf.cell(10)  # indent
+            pdf.multi_cell(180, 4, clean(desc))
+            pdf.ln(1)
 
     pdf.ln(6)
 

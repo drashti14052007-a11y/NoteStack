@@ -62,7 +62,9 @@ def test_categories_each_have_features_targets_bounds(client):
         assert "features" in config
         assert "targets" in config
         assert "bounds" in config
+        assert "subcategories" in config
         assert len(config["features"]) == len(config["bounds"])
+        assert len(config["subcategories"]) == 6  # Each category has 6 subcategories
 
 
 # ── /formulate — happy path ──────────────────────────────────
@@ -104,6 +106,20 @@ def test_formulate_response_includes_compliance_block(client):
     assert "passed" in compliance
     assert "warnings" in compliance
     assert "flags" in compliance
+
+
+def test_formulate_with_subcategory_succeeds(client):
+    response = client.post("/formulate", json={
+        "category": "dairy",
+        "subcategory": "yogurt",
+        "target_scores": [5.0] * 6,  # Subcategories have 6 attributes
+    })
+    assert response.status_code == 200
+    data = response.json()
+    assert data["category"] == "dairy"
+    assert data["subcategory"] == "yogurt"
+    assert "formulation" in data
+    assert len(data["predicted_scores"]) == 6  # User-facing attributes
 
 
 # ── /formulate — error handling ──────────────────────────────

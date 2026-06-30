@@ -44,13 +44,15 @@ saltiness = (
     + noise()
 )
 
-# Overall liking: balance is key — too much chili hurts
-overall_liking = (
-    0.20 * aroma
-    + 0.15 * colour
-    + 0.20 * saltiness
-    + 0.20 * (10 - pungency)           # very high pungency reduces liking
-    + 0.25 * pungency * 0.4            # but some heat is liked
+# Flavor balance: measures how well all spice components work together
+# Best when aroma is present, pungency is controlled, and color is rich
+flavor_balance = (
+    0.25 * aroma
+    + 0.20 * colour
+    + 0.15 * saltiness
+    + 0.15 * (10 - np.abs(pungency - 5))           # best when pungency is moderate
+    + 0.15 * np.minimum(aroma, colour)              # synergy: aroma + colour
+    + 0.10 * pungency * 0.4                         # some heat adds to balance
     + noise()
 )
 
@@ -67,7 +69,7 @@ df = pd.DataFrame({
     "aroma":           clip(aroma),
     "colour":          clip(colour),
     "saltiness":       clip(saltiness),
-    "overall_liking":  clip(overall_liking),
+    "flavor_balance":  clip(flavor_balance),
 })
 
 df.to_csv("backend/data/spices.csv", index=False)

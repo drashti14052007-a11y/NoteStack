@@ -48,12 +48,14 @@ snap = (
     + noise()
 )
 
-# Overall liking
-overall_liking = (
-    0.25 * sweetness
-    + 0.20 * (10 - bitterness)
-    + 0.30 * melt
+# Flavor balance: measures how well the different taste components work together
+# Peaks when bitterness and sweetness are balanced, melt is good, and snap is present
+flavor_balance = (
+    0.20 * np.minimum(sweetness, 10 - bitterness)  # sweet-bitter harmony
+    + 0.25 * melt
     + 0.15 * snap
+    + 0.20 * (10 - np.abs(sweetness - (10 - bitterness)))  # best when sweet/bitter balanced
+    + 0.10 * np.minimum(melt, snap)  # synergy between melt and snap
     + noise()
 )
 
@@ -70,7 +72,7 @@ df = pd.DataFrame({
     "sweetness":         clip(sweetness),
     "melt":              clip(melt),
     "snap":              clip(snap),
-    "overall_liking":    clip(overall_liking),
+    "flavor_balance":    clip(flavor_balance),
 })
 
 df.to_csv("backend/data/chocolate.csv", index=False)
